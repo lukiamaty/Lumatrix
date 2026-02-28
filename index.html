@@ -1,10 +1,291 @@
 <!DOCTYPE html>
-<html>
+<html lang="cs">
 <head>
-    <title>LUMATRIX - Tech Solutions</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LUMATRIX | Systems</title>
+    <style>
+        :root {
+            --bg: #000;
+            --text: #fff;
+            --accent: #0071e3;
+            --glass: rgba(255, 255, 255, 0.03);
+            --border: rgba(255, 255, 255, 0.12);
+            --glow: rgba(0, 113, 227, 0.45);
+            --grad-bottom: #0071e3;
+            
+            /* Stíny pro tmavý režim */
+            --shadow-nav: 0 10px 30px rgba(0,0,0,0.5), inset 0 0 12px rgba(255,255,255,0.05);
+            --shadow-card: 0 30px 60px rgba(0,0,0,0.6), inset 0 0 20px rgba(255,255,255,0.06);
+        }
+
+        .light-mode {
+            --bg: #f5f5f7;
+            --text: #000;
+            --accent: #0071e3;
+            --glass: rgba(0, 0, 0, 0.05);
+            --border: rgba(0, 0, 0, 0.15);
+            --glow: rgba(0, 113, 227, 0.25);
+            --grad-bottom: #888888;
+            
+            /* Stíny pro světlý režim */
+            --shadow-nav: 0 10px 30px rgba(0,0,0,0.08), inset 0 0 12px rgba(0,0,0,0.03);
+            --shadow-card: 0 30px 60px rgba(0,0,0,0.12), inset 0 0 20px rgba(0,0,0,0.03);
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            margin: 0;
+            transition: background 0.5s ease;
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        #glow {
+            position: fixed;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, var(--glow) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.8s ease;
+        }
+
+        nav {
+            position: fixed;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            background: var(--glass);
+            backdrop-filter: blur(50px);
+            -webkit-backdrop-filter: blur(50px);
+            padding: 6px;
+            border-radius: 24px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-nav);
+            z-index: 1000;
+            transition: box-shadow 0.5s ease;
+        }
+
+        .nav-item {
+            padding: 12px 26px;
+            color: var(--text);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            z-index: 2;
+            transition: color 0.3s;
+        }
+
+        #nav-indicator {
+            position: absolute;
+            height: 40px;
+            background: var(--text);
+            border-radius: 18px;
+            z-index: 1;
+            transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
+        .nav-active { color: var(--bg) !important; }
+        .light-mode #nav-indicator { background: #000; }
+
+        #theme-toggle {
+            position: fixed;
+            top: 35px;
+            right: 40px;
+            background: var(--glass);
+            color: var(--text);
+            border: 1px solid var(--border);
+            padding: 12px 20px;
+            border-radius: 100px;
+            cursor: pointer;
+            backdrop-filter: blur(30px);
+            font-weight: 800;
+            font-size: 12px;
+            box-shadow: var(--shadow-nav);
+            z-index: 1001;
+            transition: box-shadow 0.5s ease;
+        }
+
+        main {
+            display: flex;
+            width: 200vw;
+            height: 100vh;
+            transition: transform 0.9s cubic-bezier(0.8, 0, 0.2, 1);
+        }
+
+        section {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .hero-title {
+            display: flex;
+            justify-content: center;
+            cursor: default;
+        }
+
+        .wobble {
+            display: inline-block;
+            transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            will-change: transform;
+        }
+
+        .letter {
+            font-size: clamp(4rem, 16vw, 11rem);
+            font-weight: 900;
+            background: linear-gradient(180deg, var(--text) 45%, var(--grad-bottom) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 0.9;
+            padding: 0 8px;
+        }
+
+        .hero-sub {
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: 12px;
+            text-transform: uppercase;
+            color: var(--text);
+            opacity: 0.6;
+            margin: 40px 0;
+        }
+
+        .project-card {
+            padding: 40px 80px;
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 40px;
+            backdrop-filter: blur(60px);
+            text-align: center;
+            box-shadow: var(--shadow-card);
+            transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.5s ease;
+        }
+
+        .cat-box {
+            width: 320px;
+            border-radius: 45px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            margin-bottom: 30px;
+            background: #111;
+            box-shadow: var(--shadow-card);
+            transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.5s ease;
+        }
+
+        .cat-box img { width: 100%; display: block; min-height: 200px; object-fit: cover; }
+
+        @media (max-width: 768px) {
+            #theme-toggle { top: auto; bottom: 30px; right: 50%; transform: translateX(50%); }
+            .letter { font-size: 4.5rem; padding: 0 2px; }
+            .project-card { width: 85%; padding: 30px; }
+        }
+    </style>
 </head>
 <body>
-    <h1>Vítejte u LUMATRIX</h1>
-    <p>Projekt od Lukiho a Matyho/Huberta.</p>
+
+    <div id="glow"></div>
+
+    <nav>
+        <div id="nav-indicator"></div>
+        <div class="nav-item nav-active" onclick="moveNav(this, 0)">HOME</div>
+        <div class="nav-item" onclick="moveNav(this, 1)">ABOUT US</div>
+    </nav>
+
+    <button id="theme-toggle" class="wobble" onclick="toggleTheme()">WHITE MODE</button>
+
+    <main id="main-content">
+        <section>
+            <div class="hero-title">
+                <span class="letter wobble">L</span><span class="letter wobble">U</span><span class="letter wobble">M</span><span class="letter wobble">A</span><span class="letter wobble">T</span><span class="letter wobble">R</span><span class="letter wobble">I</span><span class="letter wobble">X</span>
+            </div>
+            <p class="hero-sub wobble">Luki & Maty</p>
+            
+            <div class="project-card wobble">
+                <p style="opacity: 0.5; font-size: 0.8rem; font-weight: 800; letter-spacing: 4px; margin: 0;">OUR PROJECTS:</p>
+                <p style="margin:15px 0 0 0; font-size: 1.6rem; font-weight: 900; color: var(--accent);">Coming soon</p>
+                <p style="opacity: 0.4; font-size: 0.9rem; margin-top: 5px;">(Like real soon...)</p>
+            </div>
+        </section>
+
+        <section>
+            <div class="cat-box wobble">
+                <img src="Kocka.GIF" alt="Cat Hammer">
+            </div>
+            <h2 class="wobble" style="font-size: 3.5rem; margin: 0; letter-spacing: -2px;">Under Construction</h2>
+            <p class="wobble" style="color: var(--accent); font-weight: 800; font-size: 1.4rem; margin-top: 10px;">LUMATRIX LABS</p>
+            <p class="wobble" style="cursor: pointer; opacity: 0.5; margin-top: 30px; text-decoration: underline;" onclick="moveNav(document.querySelectorAll('.nav-item')[0], 0)">Back to Home</p>
+        </section>
+    </main>
+
+    <script>
+        const glow = document.getElementById('glow');
+        const mainContent = document.getElementById('main-content');
+        const indicator = document.getElementById('nav-indicator');
+        const wobbles = document.querySelectorAll('.wobble');
+        let glowT;
+
+        document.addEventListener('mousemove', (e) => {
+            const { clientX: x, clientY: y } = e;
+            glow.style.opacity = '1';
+            glow.style.left = x + 'px';
+            glow.style.top = y + 'px';
+
+            wobbles.forEach(w => {
+                const r = w.getBoundingClientRect();
+                const wx = r.left + r.width / 2;
+                const wy = r.top + r.height / 2;
+                const dist = Math.hypot(x - wx, y - wy);
+                
+                if (dist < 250) {
+                    w.style.transform = `translate(${(x - wx) * 0.15}px, ${(y - wy) * 0.15}px) rotate(${(x - wx) * 0.05}deg)`;
+                } else {
+                    w.style.transform = `translate(0,0) rotate(0)`;
+                }
+            });
+
+            clearTimeout(glowT);
+            glowT = setTimeout(() => { glow.style.opacity = '0'; }, 800);
+        });
+
+        function moveNav(el, index) {
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('nav-active'));
+            el.classList.add('nav-active');
+            indicator.style.width = el.offsetWidth + 'px';
+            indicator.style.left = el.offsetLeft + 'px';
+            mainContent.style.transform = `translateX(-${index * 100}vw)`;
+        }
+
+        function toggleTheme() {
+            const isL = document.body.classList.toggle('light-mode');
+            document.getElementById('theme-toggle').innerText = isL ? 'DARK MODE' : 'WHITE MODE';
+            localStorage.setItem('lmtx_theme', isL ? 'l' : 'd');
+        }
+
+        window.onload = () => {
+            const h = document.querySelectorAll('.nav-item')[0];
+            indicator.style.width = h.offsetWidth + 'px';
+            indicator.style.left = h.offsetLeft + 'px';
+            if (localStorage.getItem('lmtx_theme') === 'l') {
+                document.body.classList.add('light-mode');
+                document.getElementById('theme-toggle').innerText = 'DARK MODE';
+            } else {
+                document.getElementById('theme-toggle').innerText = 'WHITE MODE';
+            }
+        };
+    </script>
 </body>
 </html>
