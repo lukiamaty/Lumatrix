@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>LUMATRIX | Systems</title>
     <style>
         :root {
@@ -22,9 +22,14 @@
             --accent: #0071e3;
             --glass: rgba(0, 0, 0, 0.05);
             --border: rgba(0, 0, 0, 0.15);
-            --glow: rgba(100, 100, 100, 0.2); /* Šedý glow pro bílý mód */
+            --glow: rgba(100, 100, 100, 0.2);
             --grad-bottom: #888888;
             --shadow: 0 20px 50px rgba(0,0,0,0.1), inset 0 0 15px rgba(0,0,0,0.02);
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
@@ -33,15 +38,16 @@
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             margin: 0;
             transition: background 0.5s ease;
-            overflow: hidden;
+            overflow: hidden; /* Zabrání scrollování a zoomování */
             height: 100vh;
             width: 100vw;
+            position: fixed; /* Fixuje viewport na mobilech */
         }
 
         #glow {
             position: fixed;
-            width: 600px;
-            height: 600px;
+            width: 400px;
+            height: 400px;
             background: radial-gradient(circle, var(--glow) 0%, transparent 70%);
             border-radius: 50%;
             pointer-events: none;
@@ -51,60 +57,61 @@
             transition: opacity 0.8s ease;
         }
 
-        /* STATICKÉ MENU */
+        /* NAVIGACE */
         nav {
             position: fixed;
-            top: 30px;
+            top: 20px;
             left: 50%;
             transform: translateX(-50%);
             display: flex;
             background: var(--glass);
-            backdrop-filter: blur(50px);
-            -webkit-backdrop-filter: blur(50px);
-            padding: 6px;
-            border-radius: 24px;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 4px;
+            border-radius: 20px;
             border: 1px solid var(--border);
             box-shadow: var(--shadow);
             z-index: 1000;
+            width: max-content;
         }
 
         .nav-item {
-            padding: 12px 26px;
+            padding: 10px 20px;
             color: var(--text);
             text-decoration: none;
-            font-size: 14px;
+            font-size: 12px;
             font-weight: 700;
             cursor: pointer;
             z-index: 2;
+            white-space: nowrap;
+            transition: color 0.3s ease;
         }
 
         #nav-indicator {
             position: absolute;
-            height: 40px;
+            height: calc(100% - 8px);
+            top: 4px;
             background: var(--text);
-            border-radius: 18px;
+            border-radius: 16px;
             z-index: 1;
-            transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+            transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
         }
 
         .nav-active { color: var(--bg) !important; }
-        .light-mode #nav-indicator { background: #000; }
 
-        /* STATICKÝ PŘEPÍNAČ */
         #theme-toggle {
             position: fixed;
-            top: 35px;
-            right: 40px;
+            top: 25px;
+            right: 20px;
             background: var(--glass);
             color: var(--text);
             border: 1px solid var(--border);
-            padding: 12px 20px;
+            padding: 8px 12px;
             border-radius: 100px;
             cursor: pointer;
-            backdrop-filter: blur(30px);
+            backdrop-filter: blur(20px);
             font-weight: 800;
-            font-size: 12px;
-            box-shadow: var(--shadow);
+            font-size: 10px;
             z-index: 1001;
         }
 
@@ -112,7 +119,8 @@
             display: flex;
             width: 200vw;
             height: 100vh;
-            transition: transform 0.9s cubic-bezier(0.8, 0, 0.2, 1);
+            transition: transform 0.8s cubic-bezier(0.77, 0, 0.175, 1);
+            will-change: transform;
         }
 
         section {
@@ -123,63 +131,90 @@
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
+            padding: 20px;
+            text-align: center;
+            /* Dokud není aktivní, tak ji "zneviditelníme" pro prohlížeč */
+            transition: opacity 0.5s ease;
         }
 
-        .hero-title { display: flex; justify-content: center; }
+        section.inactive {
+            opacity: 0;
+            pointer-events: none;
+        }
 
-        .wobble {
-            display: inline-block;
-            transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            will-change: transform;
+        /* TEXTY - RESPONZIVNÍ */
+        .hero-title { 
+            display: flex; 
+            justify-content: center; 
+            flex-wrap: nowrap;
+            width: 100%;
         }
 
         .letter {
-            font-size: clamp(4rem, 16vw, 11rem);
+            font-size: clamp(3rem, 14vw, 10rem);
             font-weight: 900;
             background: linear-gradient(180deg, var(--text) 45%, var(--grad-bottom) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             line-height: 0.9;
-            padding: 0 8px;
+            padding: 0 2px;
         }
 
         .hero-sub {
-            font-size: 1.6rem;
-            font-weight: 900; /* Větší a bold */
-            letter-spacing: 12px;
+            font-size: clamp(0.8rem, 4vw, 1.4rem);
+            font-weight: 800;
+            letter-spacing: clamp(4px, 2vw, 12px);
             text-transform: uppercase;
             color: var(--text);
-            opacity: 0.7;
-            margin: 30px 0;
+            opacity: 0.6;
+            margin: 20px 0 40px 0;
         }
 
-        /* PROJECT BOX - hýbe se jen jako celek */
         .project-card {
-            padding: 30px 60px;
+            width: 100%;
+            max-width: 450px;
+            padding: 30px;
             background: var(--glass);
             border: 1px solid var(--border);
-            border-radius: 40px;
-            backdrop-filter: blur(60px);
-            text-align: center;
+            border-radius: 32px;
+            backdrop-filter: blur(40px);
             box-shadow: var(--shadow);
         }
 
         .cat-box {
-            width: 320px;
-            border-radius: 45px;
+            width: min(300px, 70vw);
+            aspect-ratio: 1/1;
+            border-radius: 40px;
             overflow: hidden;
             border: 1px solid var(--border);
-            margin-bottom: 30px;
+            margin-bottom: 20px;
             background: #111;
-            box-shadow: var(--shadow);
         }
 
-        .cat-box img { width: 100%; display: block; }
+        .cat-box img { width: 100%; height: 100%; object-fit: cover; }
+
+        .section-title {
+            font-size: clamp(2rem, 10vw, 4rem);
+            margin: 0;
+            letter-spacing: -1px;
+            line-height: 1;
+        }
+
+        .wobble {
+            display: inline-block;
+            will-change: transform;
+            transition: transform 0.4s cubic-bezier(0.1, 0.7, 0.1, 1);
+        }
 
         @media (max-width: 768px) {
-            #theme-toggle { top: auto; bottom: 30px; right: 50%; transform: translateX(50%); }
-            .letter { font-size: 4.5rem; padding: 0 2px; }
-            .project-card { width: 85%; padding: 30px; }
+            #theme-toggle { 
+                top: auto; 
+                bottom: 25px; 
+                right: 50%; 
+                transform: translateX(50%); 
+            }
+            nav { top: 20px; }
+            .project-card { padding: 20px; width: 90%; }
         }
     </style>
 </head>
@@ -196,25 +231,32 @@
     <button id="theme-toggle" onclick="toggleTheme()">WHITE MODE</button>
 
     <main id="main-content">
-        <section>
+        <section id="sec-0">
             <div class="hero-title">
-                <span class="letter wobble">L</span><span class="letter wobble">U</span><span class="letter wobble">M</span><span class="letter wobble">A</span><span class="letter wobble">T</span><span class="letter wobble">R</span><span class="letter wobble">I</span><span class="letter wobble">X</span>
+                <span class="letter wobble">L</span>
+                <span class="letter wobble">U</span>
+                <span class="letter wobble">M</span>
+                <span class="letter wobble">A</span>
+                <span class="letter wobble">T</span>
+                <span class="letter wobble">R</span>
+                <span class="letter wobble">I</span>
+                <span class="letter wobble">X</span>
             </div>
             <p class="hero-sub wobble">Luki & Maty</p>
             
             <div class="project-card wobble">
-                <p style="opacity: 0.5; font-size: 0.7rem; font-weight: 800; letter-spacing: 4px; margin: 0;">OUR PROJECTS:</p>
-                <p style="margin:10px 0 0 0; font-size: 1.4rem; font-weight: 900; color: var(--accent);">Coming soon</p>
-                <p style="opacity: 0.4; font-size: 0.8rem; margin-top: 5px;">(Like real soon...)</p>
+                <p style="opacity: 0.5; font-size: 0.6rem; font-weight: 800; letter-spacing: 3px; margin: 0;">OUR PROJECTS:</p>
+                <p style="margin:10px 0 0 0; font-size: 1.2rem; font-weight: 900; color: var(--accent);">Coming soon</p>
+                <p style="opacity: 0.4; font-size: 0.7rem; margin-top: 5px;">(Like real soon...)</p>
             </div>
         </section>
 
-        <section>
+        <section id="sec-1" class="inactive">
             <div class="cat-box wobble">
-                <img src="Kocka.gif" alt="Cat Hammer">
+                <img src="Kocka.gif" alt="Cat Hammer" onerror="this.src='https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJueGZueGZueGZueGZueGZueGZueGZueGZueGZueGZueGZueGZueCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3o72F7YpG6I8R9I8x6/giphy.gif'">
             </div>
-            <h2 class="wobble" style="font-size: 3.5rem; margin: 0; letter-spacing: -2px;">Under Construction</h2>
-            <p class="wobble" style="color: var(--accent); font-weight: 800; font-size: 1.4rem; margin-top: 10px;">LUMATRIX</p>
+            <h2 class="section-title wobble">Under Construction</h2>
+            <p class="wobble" style="color: var(--accent); font-weight: 800; font-size: clamp(1rem, 5vw, 1.4rem); margin-top: 10px;">LUMATRIX SYSTEMS</p>
         </section>
     </main>
 
@@ -222,9 +264,11 @@
         const glow = document.getElementById('glow');
         const mainContent = document.getElementById('main-content');
         const indicator = document.getElementById('nav-indicator');
+        const sections = [document.getElementById('sec-0'), document.getElementById('sec-1')];
         const wobbles = document.querySelectorAll('.wobble');
         let glowT;
 
+        // Glow a Wobble efekt
         document.addEventListener('mousemove', (e) => {
             const { clientX: x, clientY: y } = e;
             glow.style.opacity = '1';
@@ -237,8 +281,11 @@
                 const wy = r.top + r.height / 2;
                 const dist = Math.hypot(x - wx, y - wy);
                 
-                if (dist < 300) {
-                    w.style.transform = `translate(${(x - wx) * 0.12}px, ${(y - wy) * 0.12}px) rotate(${(x - wx) * 0.04}deg)`;
+                if (dist < 250) {
+                    const power = (250 - dist) / 250;
+                    const moveX = (x - wx) * 0.1 * power;
+                    const moveY = (y - wy) * 0.1 * power;
+                    w.style.transform = `translate(${moveX}px, ${moveY}px) rotate(${moveX * 0.2}deg)`;
                 } else {
                     w.style.transform = `translate(0,0) rotate(0)`;
                 }
@@ -248,12 +295,31 @@
             glowT = setTimeout(() => { glow.style.opacity = '0'; }, 800);
         });
 
+        // Přepínání sekcí
         function moveNav(el, index) {
+            // Update navigace
             document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('nav-active'));
             el.classList.add('nav-active');
+            
             indicator.style.width = el.offsetWidth + 'px';
             indicator.style.left = el.offsetLeft + 'px';
+            
+            // Animace hlavního obsahu
             mainContent.style.transform = `translateX(-${index * 100}vw)`;
+
+            // Logika "existence" sekcí
+            sections.forEach((sec, i) => {
+                if(i === index) {
+                    sec.classList.remove('inactive');
+                } else {
+                    // Počkáme na konec animace posunu, než sekci "vypneme"
+                    setTimeout(() => {
+                        if (document.querySelector('.nav-active').innerText.includes(i === 0 ? 'ABOUT' : 'HOME')) {
+                             sec.classList.add('inactive');
+                        }
+                    }, 800);
+                }
+            });
         }
 
         function toggleTheme() {
@@ -262,15 +328,22 @@
             localStorage.setItem('lmtx_theme', isL ? 'l' : 'd');
         }
 
+        // Init
         window.onload = () => {
             const h = document.querySelectorAll('.nav-item')[0];
             indicator.style.width = h.offsetWidth + 'px';
             indicator.style.left = h.offsetLeft + 'px';
+            
             if (localStorage.getItem('lmtx_theme') === 'l') {
                 document.body.classList.add('light-mode');
                 document.getElementById('theme-toggle').innerText = 'DARK MODE';
             }
         };
+
+        // Prevence zoomování na mobilech při double tapu
+        document.addEventListener('touchstart', (e) => {
+            if (e.touches.length > 1) e.preventDefault();
+        }, { passive: false });
     </script>
 </body>
 </html>
