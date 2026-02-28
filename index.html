@@ -57,7 +57,8 @@
             transform: translate(-50%, -50%);
             z-index: -1;
             opacity: 0;
-            transition: opacity 0.8s ease;
+            transition: opacity 1.5s ease;
+            will-change: transform, opacity;
         }
 
         nav {
@@ -172,7 +173,7 @@
         }
 
         section.inactive {
-            opacity: 0;
+            opacity: 0 !important;
             pointer-events: none;
         }
 
@@ -311,6 +312,8 @@
         
         let mouseX = 0, mouseY = 0;
         let targetX = 0, targetY = 0;
+        let lastMove = Date.now();
+        let currentSection = 0;
 
         const sunSVG = `<circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>`;
         const moonSVG = `<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>`;
@@ -320,19 +323,23 @@
             const clientY = e.touches ? e.touches[0].clientY : e.clientY;
             targetX = clientX;
             targetY = clientY;
-            if(!e.touches) {
-                glow.style.opacity = '1';
-                glow.style.left = targetX + 'px';
-                glow.style.top = targetY + 'px';
-            }
+            lastMove = Date.now();
+            glow.style.opacity = '1';
+            glow.style.left = targetX + 'px';
+            glow.style.top = targetY + 'px';
         };
 
         window.addEventListener('mousemove', updatePos);
-        window.addEventListener('touchmove', updatePos);
+        window.addEventListener('touchmove', updatePos, { passive: true });
+        window.addEventListener('touchstart', updatePos, { passive: true });
 
         const animate = () => {
             mouseX += (targetX - mouseX) * 0.08;
             mouseY += (targetY - mouseY) * 0.08;
+
+            if (Date.now() - lastMove > 2000) {
+                glow.style.opacity = '0';
+            }
 
             wobbles.forEach(w => {
                 const r = w.getBoundingClientRect();
@@ -353,16 +360,23 @@
         };
 
         function moveNav(el, index) {
+            currentSection = index;
             document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('nav-active'));
             el.classList.add('nav-active');
+            
             indicator.style.width = el.offsetWidth + 'px';
             indicator.style.left = el.offsetLeft + 'px';
             indicator.style.opacity = '1';
+            
             mainContent.style.transform = `translateX(-${index * 100}vw)`;
-            sections.forEach((sec, i) => {
-                if(i === index) sec.classList.remove('inactive');
-                else setTimeout(() => { if (sections[index].id === sec.id) return; sec.classList.add('inactive'); }, 800);
-            });
+            
+            sections[index].classList.remove('inactive');
+            
+            setTimeout(() => {
+                sections.forEach((sec, i) => {
+                    if (i !== currentSection) sec.classList.add('inactive');
+                });
+            }, 800);
         }
 
         function toggleTheme() {
@@ -371,7 +385,11 @@
             themeText.innerText = isL ? 'DARK MODE' : 'LIGHT MODE';
             localStorage.setItem('lmtx_theme', isL ? 'l' : 'd');
             const active = document.querySelector('.nav-item.nav-active');
-            if(active) moveNav(active, Array.from(document.querySelectorAll('.nav-item')).indexOf(active));
+            if(active) {
+                indicator.style.transition = 'none';
+                moveNav(active, Array.from(document.querySelectorAll('.nav-item')).indexOf(active));
+                setTimeout(() => indicator.style.transition = '', 10);
+            }
         }
 
         window.onload = () => {
@@ -388,8 +406,6 @@
             }, 100);
             animate();
         };
-
-        document.addEventListener('touchstart', (e) => { if (e.touches.length > 1) e.preventDefault(); }, { passive: false });
     </script>
 </body>
 </html>
