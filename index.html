@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>LUMATRIX</title>
+    <link rel="icon" type="image/gif" href="Kocka.gif">
     <style>
         :root {
             --bg: #000;
@@ -57,7 +58,6 @@
             transform: translate(-50%, -50%);
             z-index: -1;
             opacity: 0;
-            transition: opacity 1.5s ease;
             will-change: transform, opacity;
         }
 
@@ -312,34 +312,67 @@
         
         let mouseX = 0, mouseY = 0;
         let targetX = 0, targetY = 0;
-        let lastMove = Date.now();
+        let letterInfluence = 0;
+        let targetInfluence = 0;
+        let idleTimer = null;
+        let resetTimer = null;
         let currentSection = 0;
 
         const sunSVG = `<circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>`;
         const moonSVG = `<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>`;
 
-        const updatePos = (e) => {
-            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-            targetX = clientX;
-            targetY = clientY;
-            lastMove = Date.now();
-            glow.style.opacity = '1';
-            glow.style.left = targetX + 'px';
-            glow.style.top = targetY + 'px';
+        const setGlowOpacity = (opacity, transitionTime) => {
+            glow.style.transition = `opacity ${transitionTime} ease`;
+            glow.style.opacity = opacity;
         };
 
-        window.addEventListener('mousemove', updatePos);
-        window.addEventListener('touchmove', updatePos, { passive: true });
-        window.addEventListener('touchstart', updatePos, { passive: true });
+        const handlePointerMove = (x, y) => {
+            targetX = x;
+            targetY = y;
+            targetInfluence = 1;
+            
+            clearTimeout(idleTimer);
+            clearTimeout(resetTimer);
+            
+            setGlowOpacity('1', '0.2s');
+            glow.style.left = targetX + 'px';
+            glow.style.top = targetY + 'px';
+            
+            // Když jsi na PC a myš je v klidu 5 sekund
+            idleTimer = setTimeout(() => {
+                setGlowOpacity('0', '1.5s'); // Glow pomalu zmizí
+                // targetInfluence zůstává 1 -> písmena zůstanou odskočená!
+            }, 5000);
+        };
+
+        const handlePointerLeave = () => {
+            clearTimeout(idleTimer);
+            clearTimeout(resetTimer);
+            
+            // Kolečko hned mizí (rychlý fade-out)
+            setGlowOpacity('0', '0.3s');
+            
+            // Za 1 sekundu se spustí plynulý návrat písmen
+            resetTimer = setTimeout(() => {
+                targetInfluence = 0;
+            }, 1000);
+        };
+
+        // Události pro PC
+        window.addEventListener('mousemove', (e) => handlePointerMove(e.clientX, e.clientY));
+        document.addEventListener('mouseleave', handlePointerLeave);
+
+        // Události pro dotykové obrazovky
+        window.addEventListener('touchstart', (e) => handlePointerMove(e.touches[0].clientX, e.touches[0].clientY), { passive: true });
+        window.addEventListener('touchmove', (e) => handlePointerMove(e.touches[0].clientX, e.touches[0].clientY), { passive: true });
+        window.addEventListener('touchend', handlePointerLeave);
 
         const animate = () => {
             mouseX += (targetX - mouseX) * 0.08;
             mouseY += (targetY - mouseY) * 0.08;
-
-            if (Date.now() - lastMove > 2000) {
-                glow.style.opacity = '0';
-            }
+            
+            // Toto zařídí onen "plynulý návrat" písmen
+            letterInfluence += (targetInfluence - letterInfluence) * 0.08;
 
             wobbles.forEach(w => {
                 const r = w.getBoundingClientRect();
@@ -348,7 +381,8 @@
                 const dist = Math.hypot(mouseX - wx, mouseY - wy);
                 
                 if (dist < 300) {
-                    const power = (300 - dist) / 300;
+                    // Síla odskoku je závislá na vzdálenosti a letterInfluence (která klesne na 0, když zvedneš prst/opustíš myš)
+                    const power = ((300 - dist) / 300) * letterInfluence;
                     const x = (mouseX - wx) * 0.15 * power;
                     const y = (mouseY - wy) * 0.15 * power;
                     w.style.transform = `translate(${x}px, ${y}px) rotate(${x * 0.1}deg)`;
