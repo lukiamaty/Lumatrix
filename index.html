@@ -49,8 +49,8 @@
 
         #glow {
             position: fixed;
-            width: 400px;
-            height: 400px;
+            width: 300px;
+            height: 300px;
             background: radial-gradient(circle, var(--glow) 0%, transparent 70%);
             border-radius: 50%;
             pointer-events: none;
@@ -75,19 +75,19 @@
             box-shadow: var(--shadow);
             z-index: 1000;
             width: max-content;
-            transition: left 0.6s cubic-bezier(0.23, 1, 0.32, 1), transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+            transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
         }
 
         body.nav-scrolled nav {
-            left: 30px;
-            transform: translateX(0);
+            top: 15px;
+            transform: translateX(-50%) scale(0.9);
         }
 
         .nav-item {
-            padding: 10px 20px;
+            padding: 8px 16px;
             color: var(--nav-text);
             text-decoration: none;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 700;
             cursor: pointer;
             z-index: 2;
@@ -113,32 +113,38 @@
         #theme-toggle {
             position: fixed;
             top: 20px;
-            right: 20px;
+            right: 15px;
             background: var(--glass);
             color: var(--text);
             border: 1px solid var(--border);
-            width: 42px;
-            height: 42px;
+            width: 44px;
+            height: 44px;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 12px;
+            border-radius: 14px;
             cursor: pointer;
             backdrop-filter: blur(20px);
             z-index: 1001;
             box-shadow: var(--shadow);
         }
 
-        #desktop-theme-text {
-            display: inline-block;
-            font-size: 10px;
-            font-weight: 800;
-            margin-right: 15px;
-            opacity: 0.8;
+        #theme-toggle svg {
+            width: 20px;
+            height: 20px;
         }
 
-        @media (min-width: 769px) { #theme-toggle { width: auto; padding: 0 15px; } }
-        @media (max-width: 768px) { #desktop-theme-text { display: none; } nav { top: 20px; left: 20px; transform: none; width: auto; } body.nav-scrolled nav { left: 20px; } }
+        #desktop-theme-text {
+            display: none;
+            font-size: 10px;
+            font-weight: 800;
+            margin-right: 10px;
+        }
+
+        @media (min-width: 1024px) { 
+            #theme-toggle { width: auto; padding: 0 15px; } 
+            #desktop-theme-text { display: inline-block; }
+        }
 
         main {
             display: flex;
@@ -166,30 +172,31 @@
             align-items: center;
             justify-content: center;
             position: relative;
-            padding-bottom: 60px;
+            padding: 0 20px;
+            text-align: center;
         }
 
-        .hero-title { display: flex; justify-content: center; width: 100%; }
+        .hero-title { display: flex; justify-content: center; width: 100%; flex-wrap: wrap; }
         .letter-wrap { display: inline-block; will-change: transform; }
         .letter {
-            font-size: clamp(3rem, 14vw, 10rem);
+            font-size: clamp(2.5rem, 12vw, 9rem);
             font-weight: 900;
             background: linear-gradient(180deg, var(--text) 45%, var(--grad-bottom) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             line-height: 0.9;
-            padding: 0 2px;
+            padding: 0 1px;
             display: inline-block;
         }
 
         .hero-sub {
-            font-size: clamp(0.8rem, 4vw, 1.4rem);
+            font-size: clamp(0.7rem, 3.5vw, 1.2rem);
             font-weight: 800;
-            letter-spacing: clamp(4px, 2vw, 12px);
+            letter-spacing: clamp(3px, 1.5vw, 10px);
             text-transform: uppercase;
             color: var(--text);
             opacity: 0.6;
-            margin: 20px 0 40px 0;
+            margin: 15px 0 0 0;
         }
 
         .scroll-prompt {
@@ -198,98 +205,89 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            opacity: 0.9;
             animation: bounce 2s infinite;
         }
         .scroll-prompt span { 
-            font-size: 10px; 
+            font-size: 9px; 
             font-weight: 900; 
-            letter-spacing: 3px; 
+            letter-spacing: 2px; 
             text-transform: uppercase; 
-            margin-bottom: 8px;
-            text-shadow: 0 0 10px rgba(0,0,0,0.8);
+            margin-bottom: 5px;
+            background: rgba(0,0,0,0.4);
+            padding: 3px 10px;
+            border-radius: 12px;
+            color: white;
         }
-        .scroll-prompt svg { 
-            width: 20px; 
-            height: 20px; 
-            fill: var(--text);
-            filter: drop-shadow(0 0 5px rgba(0,0,0,0.5));
-        }
+        .scroll-prompt svg { width: 24px; height: 24px; fill: var(--text); }
         
-        @keyframes bounce { 0%, 20%, 50%, 80%, 100% { transform: translateY(0); } 40% { transform: translateY(-8px); } 60% { transform: translateY(-4px); } }
+        @keyframes bounce { 0%, 20%, 50%, 80%, 100% { transform: translateY(0); } 40% { transform: translateY(-10px); } 60% { transform: translateY(-5px); } }
 
-        .hero-spacer {
-            height: 15vh;
-            width: 100%;
-        }
+        .hero-spacer { height: 10vh; width: 100%; }
 
         .content-layout {
-            max-width: 1300px;
+            max-width: 1200px;
             margin: 0 auto;
-            padding: 0 5vw 100px;
+            padding: 0 20px 100px;
             display: grid;
-            grid-template-columns: 1fr 380px;
-            gap: 30px;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 20px;
         }
 
-        @media (max-width: 900px) { .content-layout { grid-template-columns: 1fr; padding-top: 20px; } }
+        @media (max-width: 900px) {
+            .content-layout { 
+                display: flex; 
+                flex-direction: column; 
+            }
+        }
 
         .mega-rectangle {
             background: var(--glass);
             border: 1px solid var(--border);
-            border-radius: 40px;
-            padding: 40px;
-            backdrop-filter: blur(30px);
+            border-radius: 30px;
+            padding: 35px;
+            backdrop-filter: blur(25px);
             box-shadow: var(--shadow);
             display: flex;
             flex-direction: column;
-            gap: 25px;
+            gap: 20px;
+            width: 100%;
         }
 
         .wobble-title { font-weight: 900; margin: 0; display: inline-block; will-change: transform; }
-        .mega-title { font-size: 2.8rem; }
-        .small-title { font-size: 1.8rem; }
+        .mega-title { font-size: clamp(1.8rem, 5vw, 2.5rem); }
+        .small-title { font-size: clamp(1.4rem, 4vw, 1.8rem); }
         
-        .separator { height: 1px; background: var(--border); width: 100%; margin: 5px 0; }
-
-        .inner-project-box {
-            background: rgba(0,0,0,0.15);
-            border: 1px solid var(--border);
-            border-radius: 25px;
-            padding: 30px;
-        }
-        .inner-project-box h4 { margin: 0; color: var(--accent); font-size: 1.4rem; }
-        .inner-project-box p { opacity: 0.5; margin: 10px 0 0 0; font-size: 0.9rem; }
+        .separator { height: 1px; background: var(--border); width: 100%; }
 
         .nav-btn {
             background: var(--text);
             color: var(--bg);
             border: none;
-            padding: 16px 35px;
-            border-radius: 18px;
+            padding: 14px 28px;
+            border-radius: 15px;
             font-weight: 800;
-            font-size: 14px;
+            font-size: 13px;
             cursor: pointer;
-            width: max-content;
-            transition: transform 0.2s, opacity 0.2s;
+            width: 100%;
+            transition: opacity 0.2s;
         }
-        .nav-btn:hover { opacity: 0.9; }
-        .nav-btn:active { transform: scale(0.96); }
+        @media (min-width: 600px) { .nav-btn { width: max-content; } }
 
         .cat-box {
             width: 100%;
+            max-width: 320px;
             aspect-ratio: 1/1;
-            border-radius: 25px;
+            border-radius: 20px;
             overflow: hidden;
             border: 1px solid var(--border);
-            margin-bottom: 25px;
             background: #111;
+            margin: 20px auto;
         }
         .cat-box img { width: 100%; height: 100%; object-fit: cover; }
 
         footer {
             border-top: 1px solid var(--border);
-            padding: 60px 5vw 40px;
+            padding: 50px 30px 40px;
             background: var(--glass);
             width: 100%;
         }
@@ -299,60 +297,66 @@
             margin: 0 auto;
             display: flex;
             justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 50px;
+            align-items: flex-start;
+            gap: 30px;
         }
 
-        .footer-col h4 { font-size: 11px; letter-spacing: 2.5px; color: var(--accent); text-transform: uppercase; margin-bottom: 25px; font-weight: 900; }
-        .footer-links { display: flex; flex-direction: column; gap: 15px; }
-        .footer-links span { color: var(--text); font-weight: 700; cursor: pointer; opacity: 0.5; transition: 0.3s; font-size: 14px; }
+        @media (max-width: 600px) { 
+            .footer-grid { flex-direction: column; align-items: center; text-align: center; } 
+        }
+
+        .footer-col h4 { font-size: 10px; letter-spacing: 2px; color: var(--accent); text-transform: uppercase; margin-bottom: 20px; font-weight: 900; }
+        .footer-links { display: flex; flex-direction: column; gap: 12px; }
+        .footer-links span { font-weight: 700; cursor: pointer; opacity: 0.5; font-size: 13px; transition: 0.2s; }
         .footer-links span:hover { opacity: 1; color: var(--accent); }
 
-        .social-item {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 15px;
+        .social-item { 
+            display: flex; align-items: center; gap: 12px; margin-bottom: 12px; opacity: 0.4; justify-content: flex-end; 
             position: relative;
-            cursor: not-allowed;
-            width: max-content;
+            cursor: pointer;
+            transition: opacity 0.3s;
         }
+        @media (max-width: 600px) { .social-item { justify-content: center; } }
+        .social-item img { width: 22px; height: 22px; border-radius: 5px; filter: grayscale(100%); }
+        .social-item span { text-decoration: line-through; font-weight: 700; font-size: 13px; }
         
-        .social-item img { width: 26px; height: 26px; border-radius: 6px; filter: grayscale(100%); opacity: 0.3; }
-        .social-item span { text-decoration: line-through; opacity: 0.3; font-weight: 700; font-size: 14px; }
-
+        /* Tooltip pro socials */
         .social-item::after {
-            content: "Coming Soon";
+            content: "Currently unavailable";
             position: absolute;
-            bottom: 100%;
-            left: 50%;
-            transform: translateX(-50%) translateY(10px);
+            bottom: 120%;
+            right: 0;
             background: var(--text);
             color: var(--bg);
-            padding: 6px 12px;
+            padding: 6px 10px;
             border-radius: 8px;
-            font-size: 10px;
+            font-size: 11px;
             font-weight: 800;
-            white-space: nowrap;
-            pointer-events: none;
             opacity: 0;
-            transition: 0.2s ease;
+            pointer-events: none;
+            transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+            transform: translateY(10px);
+            white-space: nowrap;
+            box-shadow: var(--shadow);
             z-index: 10;
         }
-        .social-item:hover::after { opacity: 1; transform: translateX(-50%) translateY(-8px); }
+        @media (max-width: 600px) { .social-item::after { right: auto; left: 50%; transform: translate(-50%, 10px); } }
+        
+        .social-item:hover { opacity: 1; }
+        .social-item:hover::after, .social-item:active::after {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        @media (max-width: 600px) { .social-item:hover::after, .social-item:active::after { transform: translate(-50%, 0); } }
 
-        .copyright { text-align: center; margin-top: 60px; font-size: 10px; font-weight: 800; opacity: 0.2; letter-spacing: 3px; }
+        .copyright { text-align: center; margin-top: 40px; font-size: 9px; font-weight: 800; opacity: 0.2; letter-spacing: 2px; }
 
         .page-content {
-            min-height: calc(100vh - 400px);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 120px 20px 0;
+            padding: 120px 20px 60px;
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
         }
-
-        .page-footer-container { width: 100%; margin-top: auto; }
     </style>
 </head>
 <body>
@@ -368,7 +372,7 @@
 
     <div id="theme-toggle" onclick="toggleTheme()">
         <span id="desktop-theme-text">LIGHT MODE</span>
-        <svg id="theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg id="theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="12" cy="12" r="5"></circle>
             <line x1="12" y1="1" x2="12" y2="3"></line>
             <line x1="12" y1="21" x2="12" y2="23"></line>
@@ -406,29 +410,32 @@
             <div class="hero-spacer"></div>
 
             <div class="content-layout">
-                <div class="col-left">
+                <!-- LEVÝ BOX (NA ŠÍŘKU) -->
+                <div>
                     <div class="mega-rectangle">
-                        <h2 class="wobble-title mega-title lumatrix-effect">Under Construction</h2>
-                        <button class="nav-btn" onclick="moveNav(2)">See Project Page</button>
+                        <h2 class="wobble-title mega-title lumatrix-effect">Our Projects</h2>
+                        <button class="nav-btn" onclick="moveNav(2)">See Projects page</button>
                         
                         <div class="separator"></div>
                         
-                        <div class="inner-project-box">
-                            <p style="font-size: 10px; font-weight: 900; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 10px; opacity: 0.4;">Our Last Project:</p>
-                            <h4>Coming Soon</h4>
-                            <p>Something big is being prepared right now.</p>
+                        <h3 style="opacity: 0.8; font-weight: 800; font-size: 1.2rem; margin: 0;">Our last project:</h3>
+                        
+                        <div style="display: flex; align-items: stretch; gap: 15px; text-align: left;">
+                            <span style="font-weight: 900; font-size: 1.8rem; color: var(--accent); display: flex; align-items: center;">1:</span>
+                            <div style="border: 2px dashed var(--border); padding: 20px; border-radius: 15px; flex-grow: 1; display: flex; align-items: center;">
+                                <p class="wobble-title lumatrix-effect" style="font-size: 1.1rem; opacity: 0.8; margin: 0;">Coming soon, hopefully today :D</p>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="col-right">
-                    <div class="mega-rectangle" style="text-align: center;">
-                        <h3 class="wobble-title small-title lumatrix-effect">Under Construction</h3>
-                        <div class="cat-box">
-                            <img src="Kocka.gif" alt="Cat Hammer" onerror="this.src='https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJueGZueGZueGZueGZueGZueGZueGZueGZueGZueGZueGZueGZueCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3o72F7YpG6I8R9I8x6/giphy.gif'">
-                        </div>
-                        <p style="color: var(--accent); font-weight: 800; margin-bottom: 25px;">About Us</p>
-                        <button class="nav-btn" style="width: 100%;" onclick="moveNav(1)">Read Story</button>
+                <!-- PRAVÝ BOX (NA VÝŠKU) -->
+                <div>
+                    <div class="mega-rectangle" style="text-align: center; height: 100%; justify-content: center;">
+                        <h3 class="wobble-title small-title lumatrix-effect">About Us</h3>
+                        <p style="color: var(--accent); font-weight: 800;">Coming Soon about page</p>
+                        <div class="separator"></div>
+                        <button class="nav-btn" style="width: 100%;" onclick="moveNav(1)">Read More</button>
                     </div>
                 </div>
             </div>
@@ -439,8 +446,13 @@
         <!-- ABOUT US PAGE -->
         <section id="sec-1">
             <div class="page-content">
-                <h2 class="wobble-title lumatrix-effect" style="font-size: 3.5rem;">Coming Soon</h2>
-                <p style="opacity: 0.5; font-weight: 700; margin-top: 10px;">The story of LUMATRIX is being written...</p>
+                <h2 class="wobble-title lumatrix-effect" style="font-size: 3rem;">About Us</h2>
+                <div class="cat-box">
+                    <img src="Kocka.gif" alt="Cat Hammer" onerror="this.src='https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJueGZueGZueGZueGZueGZueGZueGZueGZueGZueGZueGZueGZueCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3o72F7YpG6I8R9I8x6/giphy.gif'">
+                </div>
+                <p class="wobble-title lumatrix-effect" style="font-size: 1.5rem; color: var(--accent);">Coming Soon</p>
+                <div style="height: 40px;"></div>
+                <button class="nav-btn" onclick="moveNav(0)">Back to Home</button>
             </div>
             <div class="page-footer-container" id="footer-1"></div>
         </section>
@@ -448,8 +460,13 @@
         <!-- PROJECTS PAGE -->
         <section id="sec-2">
             <div class="page-content">
-                <h2 class="wobble-title lumatrix-effect" style="font-size: 3.5rem;">Coming Soon</h2>
-                <p style="opacity: 0.5; font-weight: 700; margin-top: 10px;">Amazing projects are on their way!</p>
+                <h2 class="wobble-title lumatrix-effect" style="font-size: 3rem;">Projects</h2>
+                <div class="cat-box">
+                    <img src="Kocka.gif" alt="Cat Hammer" onerror="this.src='https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJueGZueGZueGZueGZueGZueGZueGZueGZueGZueGZueGZueGZueGZueCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3o72F7YpG6I8R9I8x6/giphy.gif'">
+                </div>
+                <h2 class="wobble-title lumatrix-effect" style="font-size: 1.8rem;">Coming soon, hopefully today :D</h2>
+                <div style="height: 60px;"></div>
+                <button class="nav-btn" onclick="moveNav(0)">Back to Home</button>
             </div>
             <div class="page-footer-container" id="footer-2"></div>
         </section>
@@ -458,28 +475,19 @@
     <template id="footer-template">
         <footer>
             <div class="footer-grid">
-                <div class="footer-col">
-                    <h4>Our Pages</h4>
+                <div class="footer-col" style="text-align: left;">
+                    <h4>Navigation</h4>
                     <div class="footer-links">
                         <span onclick="moveNav(0)">Home</span>
                         <span onclick="moveNav(1)">About Us</span>
                         <span onclick="moveNav(2)">Projects</span>
                     </div>
                 </div>
-                <div class="footer-col">
-                    <h4>Our Social Media</h4>
-                    <div class="social-item">
-                        <img src="discord.jpg" alt="Discord">
-                        <span>Our Discord</span>
-                    </div>
-                    <div class="social-item">
-                        <img src="youtube.jpg" alt="YouTube">
-                        <span>Our YouTube</span>
-                    </div>
-                    <div class="social-item">
-                        <img src="instagram.jpg" alt="Instagram">
-                        <span>Our Instagram</span>
-                    </div>
+                <div class="footer-col" style="text-align: right;">
+                    <h4>Socials</h4>
+                    <div class="social-item"><img src="discord.jpg" alt="D"><span>Discord</span></div>
+                    <div class="social-item"><img src="youtube.jpg" alt="Y"><span>YouTube</span></div>
+                    <div class="social-item"><img src="instagram.jpg" alt="I"><span>Instagram</span></div>
                 </div>
             </div>
             <div class="copyright">© 2026 LUMATRIX</div>
@@ -496,45 +504,30 @@
         const themeIcon = document.getElementById('theme-icon');
         const themeText = document.getElementById('desktop-theme-text');
         
-        let mouseX = 0, mouseY = 0;
-        let targetX = 0, targetY = 0;
-        let influence = 0;
-        let targetInfluence = 0;
-        let idleTimer = null;
-        let resetTimer = null;
-        let scrollProgress = 0;
+        let mouseX = 0, mouseY = 0, targetX = 0, targetY = 0, influence = 0, targetInfluence = 0, scrollProgress = 0;
 
         const sunSVG = `<circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>`;
         const moonSVG = `<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>`;
 
+        // Sledování scrollu na Homepage
         document.getElementById('sec-0').addEventListener('scroll', (e) => {
             let s = e.target.scrollTop;
-            if (s > 50) document.body.classList.add('nav-scrolled');
+            if (s > 40) document.body.classList.add('nav-scrolled');
             else document.body.classList.remove('nav-scrolled');
-            scrollProgress = Math.min(s / 450, 1);
+            scrollProgress = Math.min(s / 600, 1);
         });
 
         const handlePointerMove = (x, y) => {
             targetX = x; targetY = y;
             targetInfluence = 1;
-            clearTimeout(idleTimer); clearTimeout(resetTimer);
             glow.style.opacity = '1';
             glow.style.left = targetX + 'px';
             glow.style.top = targetY + 'px';
-            idleTimer = setTimeout(() => { glow.style.opacity = '0'; }, 3000);
-        };
-
-        const handlePointerLeave = () => {
-            clearTimeout(idleTimer); clearTimeout(resetTimer);
-            glow.style.opacity = '0';
-            resetTimer = setTimeout(() => { targetInfluence = 0; }, 800);
         };
 
         window.addEventListener('mousemove', (e) => handlePointerMove(e.clientX, e.clientY));
-        document.addEventListener('mouseleave', handlePointerLeave);
         window.addEventListener('touchstart', (e) => handlePointerMove(e.touches[0].clientX, e.touches[0].clientY), { passive: true });
         window.addEventListener('touchmove', (e) => handlePointerMove(e.touches[0].clientX, e.touches[0].clientY), { passive: true });
-        window.addEventListener('touchend', handlePointerLeave);
 
         const animate = () => {
             mouseX += (targetX - mouseX) * 0.08;
@@ -546,22 +539,20 @@
                 const wx = r.left + r.width / 2;
                 const wy = r.top + r.height / 2;
                 const dist = Math.hypot(mouseX - wx, mouseY - wy);
-                if (dist < 400) {
-                    const power = ((400 - dist) / 400) * influence;
-                    const x = (mouseX - wx) * 0.12 * power;
-                    const y = (mouseY - wy) * 0.12 * power;
-                    el.style.transform = `translate(${x}px, ${y}px) rotate(${x * 0.05}deg)`;
+                if (dist < 300) {
+                    const power = ((300 - dist) / 300) * influence;
+                    el.style.transform = `translate(${(mouseX - wx) * 0.1 * power}px, ${(mouseY - wy) * 0.1 * power}px)`;
                 } else {
-                    el.style.transform = `translate(0,0) rotate(0)`;
+                    el.style.transform = `translate(0,0)`;
                 }
             });
 
             letterWraps.forEach(wrap => {
                 const idx = parseInt(wrap.getAttribute('data-index'));
                 const offset = idx - 3.5;
-                const arcX = offset * 45 * scrollProgress;
-                const arcY = -Math.pow(offset, 2) * 18 * scrollProgress;
-                const arcRot = offset * 12 * scrollProgress;
+                const arcX = offset * 40 * scrollProgress;
+                const arcY = -Math.pow(offset, 2) * 15 * scrollProgress;
+                const arcRot = offset * 10 * scrollProgress;
                 wrap.style.transform = `translate(${arcX}px, ${arcY}px) rotate(${arcRot}deg)`;
             });
 
@@ -583,12 +574,15 @@
             updateIndicator();
             mainContent.style.transform = `translateX(-${index * 100}vw)`;
             
+            // Vyroluje konkrétní sekci zase nahoru
+            const targetSec = document.getElementById(`sec-${index}`);
+            targetSec.scrollTo({ top: 0, behavior: 'smooth' });
+
+            // Navigace se zvětší/zmenší v závislosti na tom, jestli jsme zpět nahoře
             if(index !== 0) {
                 document.body.classList.add('nav-scrolled');
             } else {
-                if(document.getElementById('sec-0').scrollTop <= 50) {
-                    document.body.classList.remove('nav-scrolled');
-                }
+                document.body.classList.remove('nav-scrolled');
             }
         }
 
@@ -600,25 +594,18 @@
             setTimeout(updateIndicator, 50);
         }
 
-        function setupFooters() {
+        window.onload = () => {
             const template = document.getElementById('footer-template');
             for(let i=0; i<3; i++) {
                 const container = document.getElementById(`footer-${i}`);
-                if(container) {
-                    const clone = template.content.cloneNode(true);
-                    container.appendChild(clone);
-                }
+                if(container) container.appendChild(template.content.cloneNode(true));
             }
-        }
-
-        window.onload = () => {
-            setupFooters();
             if (localStorage.getItem('lmtx_theme') === 'l') {
                 document.body.classList.add('light-mode');
                 themeIcon.innerHTML = moonSVG;
                 themeText.innerText = 'DARK MODE';
             }
-            setTimeout(updateIndicator, 100);
+            setTimeout(updateIndicator, 200);
             animate();
         };
 
