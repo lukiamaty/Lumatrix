@@ -76,6 +76,12 @@
             box-shadow: var(--shadow);
             z-index: 1000;
             width: max-content;
+            transition: left 0.6s cubic-bezier(0.23, 1, 0.32, 1), transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        body.nav-scrolled nav {
+            left: 30px;
+            transform: translateX(0);
         }
 
         .nav-item {
@@ -88,6 +94,7 @@
             z-index: 2;
             white-space: nowrap;
             transition: color 0.3s ease;
+            position: relative;
         }
 
         #nav-indicator {
@@ -97,8 +104,9 @@
             background: var(--text);
             border-radius: 16px;
             z-index: 1;
-            transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
             opacity: 0;
+            pointer-events: none;
         }
 
         .nav-active { color: var(--bg) !important; }
@@ -149,11 +157,13 @@
 
         @media (max-width: 768px) {
             #desktop-theme-text { display: none; }
+            nav { top: 20px; left: 20px; transform: none; width: auto; }
+            body.nav-scrolled nav { left: 20px; }
         }
 
         main {
             display: flex;
-            width: 200vw;
+            width: 300vw;
             height: 100vh;
             transition: transform 0.8s cubic-bezier(0.77, 0, 0.175, 1);
             will-change: transform;
@@ -162,19 +172,21 @@
         section {
             width: 100vw;
             height: 100vh;
+            flex-shrink: 0;
+            overflow-y: auto;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        section::-webkit-scrollbar { display: none; }
+
+        .hero-screen {
+            height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            flex-shrink: 0;
-            padding: 20px;
-            text-align: center;
-            transition: opacity 0.5s ease;
-        }
-
-        section.inactive {
-            opacity: 0 !important;
-            pointer-events: none;
+            position: relative;
         }
 
         .hero-title { 
@@ -182,6 +194,11 @@
             justify-content: center; 
             flex-wrap: nowrap;
             width: 100%;
+        }
+
+        .letter-wrap {
+            display: inline-block;
+            will-change: transform;
         }
 
         .letter {
@@ -192,6 +209,7 @@
             -webkit-text-fill-color: transparent;
             line-height: 0.9;
             padding: 0 2px;
+            display: inline-block;
         }
 
         .hero-sub {
@@ -204,34 +222,181 @@
             margin: 20px 0 40px 0;
         }
 
-        .project-card {
-            width: 100%;
-            max-width: 450px;
-            padding: 30px;
+        .scroll-prompt {
+            position: absolute;
+            bottom: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            opacity: 0.5;
+            animation: bounce 2s infinite;
+        }
+        .scroll-prompt span { font-size: 10px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 5px; }
+        .scroll-prompt svg { width: 20px; height: 20px; fill: var(--text); }
+        .scroll-prompt svg:nth-child(3) { margin-top: -10px; }
+        
+        @keyframes bounce { 
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); } 
+            40% { transform: translateY(-10px); } 
+            60% { transform: translateY(-5px); } 
+        }
+
+        .content-layout {
+            min-height: 100vh;
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 80px 5vw 40px;
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 40px;
+        }
+
+        @media (max-width: 900px) {
+            .content-layout { grid-template-columns: 1fr; }
+        }
+
+        .col-left { display: flex; flex-direction: column; gap: 50px; }
+        .col-right { display: flex; flex-direction: column; }
+
+        .block-title { font-size: clamp(2rem, 5vw, 3rem); font-weight: 900; margin: 0 0 15px 0; }
+        
+        .nav-btn {
+            background: var(--text);
+            color: var(--bg);
+            border: none;
+            padding: 15px 35px;
+            border-radius: 20px;
+            font-weight: 800;
+            font-size: 14px;
+            cursor: pointer;
+            width: max-content;
+            transition: transform 0.2s;
+        }
+        .nav-btn:active { transform: scale(0.95); }
+
+        .card-horizontal {
             background: var(--glass);
             border: 1px solid var(--border);
-            border-radius: 32px;
-            backdrop-filter: blur(40px);
+            border-radius: 30px;
+            padding: 40px 30px;
+            backdrop-filter: blur(20px);
             box-shadow: var(--shadow);
         }
 
+        .card-horizontal h3 { margin: 0; font-size: 1.8rem; color: var(--accent); }
+        .card-horizontal p { font-weight: 600; opacity: 0.6; margin: 10px 0 0 0; }
+
+        .card-vertical {
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 30px;
+            padding: 30px;
+            backdrop-filter: blur(20px);
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            position: sticky;
+            top: 100px;
+        }
+
         .cat-box {
-            width: min(300px, 70vw);
+            width: 100%;
             aspect-ratio: 1/1;
-            border-radius: 40px;
+            border-radius: 20px;
             overflow: hidden;
             border: 1px solid var(--border);
             margin-bottom: 20px;
             background: #111;
         }
-
         .cat-box img { width: 100%; height: 100%; object-fit: cover; }
 
-        .section-title {
-            font-size: clamp(2rem, 10vw, 4rem);
-            margin: 0;
-            letter-spacing: -1px;
-            line-height: 1;
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 60px 5vw 30px;
+            background: var(--glass);
+            margin-top: 50px;
+        }
+
+        .footer-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 40px;
+        }
+
+        .footer-col h4 { font-size: 12px; letter-spacing: 2px; color: var(--accent); text-transform: uppercase; margin-bottom: 20px; }
+        
+        .footer-links { display: flex; flex-direction: column; gap: 15px; }
+        .footer-links span { color: var(--text); font-weight: 700; cursor: pointer; opacity: 0.6; transition: 0.3s; }
+        .footer-links span:hover { opacity: 1; }
+
+        .social-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+            position: relative;
+            cursor: not-allowed;
+            width: max-content;
+        }
+        
+        .social-item img {
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            filter: grayscale(100%);
+            opacity: 0.4;
+        }
+
+        .social-item span {
+            text-decoration: line-through;
+            opacity: 0.4;
+            font-weight: 700;
+        }
+
+        .social-item::after {
+            content: "Currently unavailable";
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%) translateY(10px);
+            background: var(--text);
+            color: var(--bg);
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 800;
+            white-space: nowrap;
+            pointer-events: none;
+            opacity: 0;
+            transition: all 0.2s ease;
+            z-index: 10;
+        }
+
+        .social-item:hover::after {
+            opacity: 1;
+            transform: translateX(-50%) translateY(-8px);
+        }
+
+        .copyright {
+            text-align: center;
+            margin-top: 60px;
+            font-size: 10px;
+            font-weight: 800;
+            opacity: 0.3;
+            letter-spacing: 2px;
+        }
+
+        .center-page { 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            min-height: 100vh;
         }
 
         .wobble {
@@ -239,10 +404,15 @@
             will-change: transform;
         }
 
-        @media (max-width: 768px) {
-            #theme-toggle { top: 20px; right: 20px; }
-            nav { top: 20px; left: 20px; transform: none; width: auto; }
-            .project-card { padding: 20px; width: 90%; }
+        .inactive-content {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s;
+        }
+
+        .active-content {
+            opacity: 1;
+            transition: opacity 0.5s;
         }
     </style>
 </head>
@@ -252,8 +422,9 @@
 
     <nav>
         <div id="nav-indicator"></div>
-        <div class="nav-item nav-active" onclick="moveNav(this, 0)">HOME</div>
-        <div class="nav-item" onclick="moveNav(this, 1)">ABOUT US</div>
+        <div class="nav-item nav-active" onclick="moveNav(0)">HOME</div>
+        <div class="nav-item" onclick="moveNav(1)">ABOUT US</div>
+        <div class="nav-item" onclick="moveNav(2)">PROJECTS</div>
     </nav>
 
     <div id="theme-toggle" onclick="toggleTheme()">
@@ -273,31 +444,100 @@
 
     <main id="main-content">
         <section id="sec-0">
-            <div class="hero-title">
-                <span class="letter wobble">L</span>
-                <span class="letter wobble">U</span>
-                <span class="letter wobble">M</span>
-                <span class="letter wobble">A</span>
-                <span class="letter wobble">T</span>
-                <span class="letter wobble">R</span>
-                <span class="letter wobble">I</span>
-                <span class="letter wobble">X</span>
+            <div class="hero-screen">
+                <div class="hero-title">
+                    <div class="letter-wrap" data-index="0"><span class="letter wobble">L</span></div>
+                    <div class="letter-wrap" data-index="1"><span class="letter wobble">U</span></div>
+                    <div class="letter-wrap" data-index="2"><span class="letter wobble">M</span></div>
+                    <div class="letter-wrap" data-index="3"><span class="letter wobble">A</span></div>
+                    <div class="letter-wrap" data-index="4"><span class="letter wobble">T</span></div>
+                    <div class="letter-wrap" data-index="5"><span class="letter wobble">R</span></div>
+                    <div class="letter-wrap" data-index="6"><span class="letter wobble">I</span></div>
+                    <div class="letter-wrap" data-index="7"><span class="letter wobble">X</span></div>
+                </div>
+                <p class="hero-sub wobble">Luki & Maty</p>
+                
+                <div class="scroll-prompt">
+                    <span>Scroll down to see more</span>
+                    <svg viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+                    <svg viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+                </div>
             </div>
-            <p class="hero-sub wobble">Luki & Maty</p>
-            
-            <div class="project-card wobble">
-                <p style="opacity: 0.5; font-size: 0.6rem; font-weight: 800; letter-spacing: 3px; margin: 0;">OUR PROJECTS:</p>
-                <p style="margin:10px 0 0 0; font-size: 1.2rem; font-weight: 900; color: var(--accent);">Coming soon</p>
-                <p style="opacity: 0.4; font-size: 0.7rem; margin-top: 5px;">(Like real soon...)</p>
+
+            <div class="content-layout">
+                <div class="col-left">
+                    <div>
+                        <h1 class="block-title wobble">Projects</h1>
+                        <button class="nav-btn wobble" onclick="moveNav(2)">See Project Page</button>
+                    </div>
+                    <div>
+                        <h2 class="block-title wobble" style="font-size: 2rem;">Our Latest Project</h2>
+                        <div class="card-horizontal wobble">
+                            <h3>No project yet...</h3>
+                            <p>We are working hard. Hopefully dropping today!</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-right">
+                    <div class="card-vertical wobble">
+                        <h2 class="block-title" style="font-size: 1.8rem; margin-bottom: 20px;">About Us</h2>
+                        <div class="cat-box">
+                            <img src="Kocka.gif" onerror="this.src='https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJueGZueGZueGZueGZueGZueGZueGZueGZueGZueGZueGZueGZueCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3o72F7YpG6I8R9I8x6/giphy.gif'">
+                        </div>
+                        <p style="font-weight: 800; color: var(--accent); margin-bottom: 20px;">Under Construction</p>
+                        <button class="nav-btn" style="width: 100%;" onclick="moveNav(1)">About Us</button>
+                    </div>
+                </div>
+            </div>
+
+            <footer>
+                <div class="footer-grid">
+                    <div class="footer-col">
+                        <h4>Our Pages</h4>
+                        <div class="footer-links">
+                            <span onclick="goFromFooter(0)">Home</span>
+                            <span onclick="goFromFooter(1)">About Us</span>
+                            <span onclick="goFromFooter(2)">Projects</span>
+                        </div>
+                    </div>
+                    <div class="footer-col">
+                        <h4>Our Social Media</h4>
+                        <div class="social-item">
+                            <img src="discord.jpg" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'><rect width=\'100\' height=\'100\' fill=\'#333\'/></svg>'">
+                            <span>Our Discord</span>
+                        </div>
+                        <div class="social-item">
+                            <img src="youtube.jpg" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'><rect width=\'100\' height=\'100\' fill=\'#333\'/></svg>'">
+                            <span>Our YouTube</span>
+                        </div>
+                        <div class="social-item">
+                            <img src="instagram.jpg" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'><rect width=\'100\' height=\'100\' fill=\'#333\'/></svg>'">
+                            <span>Our Instagram</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="copyright">
+                    © 2026 LUMATRIX
+                </div>
+            </footer>
+        </section>
+
+        <section id="sec-1">
+            <div class="center-page inactive-content" id="content-1">
+                <div class="cat-box wobble" style="width: min(300px, 70vw); border-radius: 40px;">
+                    <img src="Kocka.gif" onerror="this.src='https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJueGZueGZueGZueGZueGZueGZueGZueGZueGZueGZueGZueGZueCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3o72F7YpG6I8R9I8x6/giphy.gif'">
+                </div>
+                <h2 class="block-title wobble" style="font-size: clamp(2rem, 10vw, 4rem);">Under Construction</h2>
+                <p class="wobble" style="color: var(--accent); font-weight: 800; font-size: clamp(1rem, 5vw, 1.4rem); margin-top: 10px;">LUMATRIX</p>
             </div>
         </section>
 
-        <section id="sec-1" class="inactive">
-            <div class="cat-box wobble">
-                <img src="Kocka.gif" alt="Cat Hammer" onerror="this.src='https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJueGZueGZueGZueGZueGZueGZueGZueGZueGZueGZueGZueGZueCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3o72F7YpG6I8R9I8x6/giphy.gif'">
+        <section id="sec-2">
+            <div class="center-page inactive-content" id="content-2">
+                <h2 class="block-title wobble" style="font-size: clamp(2rem, 10vw, 4rem);">Projects</h2>
+                <p class="wobble" style="color: var(--accent); font-weight: 800; font-size: clamp(1rem, 5vw, 1.4rem); margin-top: 10px;">Nothing to see here yet.</p>
             </div>
-            <h2 class="section-title wobble">Under Construction</h2>
-            <p class="wobble" style="color: var(--accent); font-weight: 800; font-size: clamp(1rem, 5vw, 1.4rem); margin-top: 10px;">LUMATRIX</p>
         </section>
     </main>
 
@@ -305,10 +545,12 @@
         const glow = document.getElementById('glow');
         const mainContent = document.getElementById('main-content');
         const indicator = document.getElementById('nav-indicator');
-        const sections = [document.getElementById('sec-0'), document.getElementById('sec-1')];
+        const navItems = document.querySelectorAll('.nav-item');
         const wobbles = document.querySelectorAll('.wobble');
+        const letterWraps = document.querySelectorAll('.letter-wrap');
         const themeIcon = document.getElementById('theme-icon');
         const themeText = document.getElementById('desktop-theme-text');
+        const sec0 = document.getElementById('sec-0');
         
         let mouseX = 0, mouseY = 0;
         let targetX = 0, targetY = 0;
@@ -316,10 +558,17 @@
         let targetInfluence = 0;
         let idleTimer = null;
         let resetTimer = null;
-        let currentSection = 0;
+        let scrollProgress = 0;
 
         const sunSVG = `<circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>`;
         const moonSVG = `<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>`;
+
+        sec0.addEventListener('scroll', () => {
+            let s = sec0.scrollTop;
+            if (s > 50) document.body.classList.add('nav-scrolled');
+            else document.body.classList.remove('nav-scrolled');
+            scrollProgress = Math.min(s / 400, 1);
+        });
 
         const setGlowOpacity = (opacity, transitionTime) => {
             glow.style.transition = `opacity ${transitionTime} ease`;
@@ -338,31 +587,20 @@
             glow.style.left = targetX + 'px';
             glow.style.top = targetY + 'px';
             
-            // Když jsi na PC a myš je v klidu 5 sekund
             idleTimer = setTimeout(() => {
-                setGlowOpacity('0', '1.5s'); // Glow pomalu zmizí
-                // targetInfluence zůstává 1 -> písmena zůstanou odskočená!
+                setGlowOpacity('0', '1.5s');
             }, 5000);
         };
 
         const handlePointerLeave = () => {
             clearTimeout(idleTimer);
             clearTimeout(resetTimer);
-            
-            // Kolečko hned mizí (rychlý fade-out)
             setGlowOpacity('0', '0.3s');
-            
-            // Za 1 sekundu se spustí plynulý návrat písmen
-            resetTimer = setTimeout(() => {
-                targetInfluence = 0;
-            }, 1000);
+            resetTimer = setTimeout(() => { targetInfluence = 0; }, 1000);
         };
 
-        // Události pro PC
         window.addEventListener('mousemove', (e) => handlePointerMove(e.clientX, e.clientY));
         document.addEventListener('mouseleave', handlePointerLeave);
-
-        // Události pro dotykové obrazovky
         window.addEventListener('touchstart', (e) => handlePointerMove(e.touches[0].clientX, e.touches[0].clientY), { passive: true });
         window.addEventListener('touchmove', (e) => handlePointerMove(e.touches[0].clientX, e.touches[0].clientY), { passive: true });
         window.addEventListener('touchend', handlePointerLeave);
@@ -370,8 +608,6 @@
         const animate = () => {
             mouseX += (targetX - mouseX) * 0.08;
             mouseY += (targetY - mouseY) * 0.08;
-            
-            // Toto zařídí onen "plynulý návrat" písmen
             letterInfluence += (targetInfluence - letterInfluence) * 0.08;
 
             wobbles.forEach(w => {
@@ -381,7 +617,6 @@
                 const dist = Math.hypot(mouseX - wx, mouseY - wy);
                 
                 if (dist < 300) {
-                    // Síla odskoku je závislá na vzdálenosti a letterInfluence (která klesne na 0, když zvedneš prst/opustíš myš)
                     const power = ((300 - dist) / 300) * letterInfluence;
                     const x = (mouseX - wx) * 0.15 * power;
                     const y = (mouseY - wy) * 0.15 * power;
@@ -390,27 +625,41 @@
                     w.style.transform = `translate(0,0) rotate(0)`;
                 }
             });
+
+            letterWraps.forEach(wrap => {
+                const idx = parseInt(wrap.getAttribute('data-index'));
+                const centerOffset = idx - 3.5;
+                const arcX = centerOffset * 40 * scrollProgress;
+                const arcY = -Math.pow(centerOffset, 2) * 20 * scrollProgress;
+                const arcRot = centerOffset * 10 * scrollProgress;
+                wrap.style.transform = `translate(${arcX}px, ${arcY}px) rotate(${arcRot}deg)`;
+            });
+
             requestAnimationFrame(animate);
         };
 
-        function moveNav(el, index) {
-            currentSection = index;
-            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('nav-active'));
-            el.classList.add('nav-active');
-            
-            indicator.style.width = el.offsetWidth + 'px';
-            indicator.style.left = el.offsetLeft + 'px';
-            indicator.style.opacity = '1';
-            
+        function updateIndicator() {
+            const active = document.querySelector('.nav-item.nav-active');
+            if (active) {
+                indicator.style.width = active.offsetWidth + 'px';
+                indicator.style.left = active.offsetLeft + 'px';
+                indicator.style.opacity = '1';
+            }
+        }
+
+        function moveNav(index) {
+            navItems.forEach(i => i.classList.remove('nav-active'));
+            navItems[index].classList.add('nav-active');
+            updateIndicator();
             mainContent.style.transform = `translateX(-${index * 100}vw)`;
             
-            sections[index].classList.remove('inactive');
-            
-            setTimeout(() => {
-                sections.forEach((sec, i) => {
-                    if (i !== currentSection) sec.classList.add('inactive');
-                });
-            }, 800);
+            document.getElementById('content-1').className = index === 1 ? 'center-page active-content' : 'center-page inactive-content';
+            document.getElementById('content-2').className = index === 2 ? 'center-page active-content' : 'center-page inactive-content';
+        }
+
+        function goFromFooter(index) {
+            sec0.scrollTo({ top: 0, behavior: 'smooth' });
+            setTimeout(() => { moveNav(index); }, 400);
         }
 
         function toggleTheme() {
@@ -418,28 +667,22 @@
             themeIcon.innerHTML = isL ? moonSVG : sunSVG;
             themeText.innerText = isL ? 'DARK MODE' : 'LIGHT MODE';
             localStorage.setItem('lmtx_theme', isL ? 'l' : 'd');
-            const active = document.querySelector('.nav-item.nav-active');
-            if(active) {
-                indicator.style.transition = 'none';
-                moveNav(active, Array.from(document.querySelectorAll('.nav-item')).indexOf(active));
-                setTimeout(() => indicator.style.transition = '', 10);
-            }
+            setTimeout(updateIndicator, 50);
         }
 
         window.onload = () => {
-            const h = document.querySelectorAll('.nav-item')[0];
             if (localStorage.getItem('lmtx_theme') === 'l') {
                 document.body.classList.add('light-mode');
                 themeIcon.innerHTML = moonSVG;
                 themeText.innerText = 'DARK MODE';
             }
-            setTimeout(() => {
-                indicator.style.width = h.offsetWidth + 'px';
-                indicator.style.left = h.offsetLeft + 'px';
-                indicator.style.opacity = '1';
-            }, 100);
+            document.getElementById('content-1').className = 'center-page inactive-content';
+            document.getElementById('content-2').className = 'center-page inactive-content';
+            setTimeout(updateIndicator, 100);
             animate();
         };
+
+        window.addEventListener('resize', updateIndicator);
     </script>
 </body>
 </html>
